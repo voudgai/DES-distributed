@@ -17,7 +17,7 @@ public class TestG {
 			// Simulator<Object> simulator = new SimulatorSinglethread<Object>(1);
 			Simulator<Object> simulator = new SimulatorOptimistic<Object>(1);
 
-			simulator.setNetlist(netlist);
+			simulator.setNetlist(netlist); 
 			simulator.init();
 			while (simulator.getlTime() < 100) {
 				simulator.execute();
