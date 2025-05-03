@@ -1,45 +1,40 @@
 package project.centralServer;
 
 import java.io.IOException;
+import java.io.Serializable;
 
-public class RequestHandler extends Thread{
-	private final ServiceComms service;
-//	private final ServerService serverService;
+import rs.ac.bg.etf.sleep.simulation.Simulator;
 
-	public RequestHandler(ServiceComms service) {
-			this.service = service;
-//			this.serverService = new ServerService();
-		}
+public class RequestHandler extends Thread {
+	private final ServerService service;
+	private Simulator<Serializable> simulator;
 
-	public void run() {
-		while (true) {
-			String msg;
-			try {
-				msg = service.receiveMsg();
-
-				if (msg == null) {
-					break;
-				}
-				service.sendMsg(parseAndRespond(msg));
-
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		service.close();
+	public RequestHandler(ServerService service) {
+		this.service = service;
 	}
 
-	private String parseAndRespond(String msg) {
-		// #setI#a#
-		// #add#a#b#q
-//		String[] data = msg.split("#");
+	@Override
+	public void run() {
+		try {
+			simulator = service.receiveSimulator();
+			if (simulator == null)
+				return;
 
-		int ret = 5;
-//		if ("setI".equals(data[1])) {
-//			ret = serverService.setI(Integer.parseInt(data[2]));
-//		} 
-		return Integer.toString(ret);
+			simulate(service.getSimulationTime());
 
+			service.simulationEnded();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			System.out.println("Simulation ended.");
+			service.close();
+		}
+	}
+
+	private void simulate(long simulationTime) {
+		while (simulator.getlTime() < simulationTime) {
+			simulator.execute();
+			System.out.println("Time:" + simulator.getlTime());
+		}
 	}
 }

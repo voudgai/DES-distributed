@@ -4,7 +4,11 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import CommonServerClient.ServiceCommunications;
+
 public class Server {
+	static public final String IP_ADDRESS = "localhost";
+	static public final int RECEIVING_PORT = 5555;
 	public Server() {
 		// TODO Auto-generated constructor stub
 	}
@@ -14,7 +18,7 @@ public class Server {
 		ServerSocket serverSocket = null;
 		
 		try {
-			serverSocket = new ServerSocket(5555);
+			serverSocket = new ServerSocket(RECEIVING_PORT);
 			
 			while(true)
 			{
@@ -22,14 +26,13 @@ public class Server {
 				Socket clientSocket = serverSocket.accept();
 				System.out.println("Client accepted");
 				
-				ServiceComms service = new ServiceComms(clientSocket);
+				ServerService service = new ServerService(clientSocket);
 				
 				Thread t = new RequestHandler(service);
 				t.start();
 			}
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

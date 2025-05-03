@@ -14,10 +14,10 @@ public class TestG {
 			String connections = args[1];
 			String componentsDst = args[2];
 			Netlist<Object> netlist = loadNetlist(components, connections);
-			// Simulator<Object> simulator = new SimulatorSinglethread<Object>(1);
-			Simulator<Object> simulator = new SimulatorOptimistic<Object>(1);
+			Simulator<Object> simulator = new SimulatorMultithread<Object>(1);
+//			Simulator<Serializable> simulator = new SimulatorOptimistic<Serializable>(1);
 
-			simulator.setNetlist(netlist); 
+			simulator.setNetlist(netlist);
 			simulator.init();
 			while (simulator.getlTime() < 100) {
 				simulator.execute();
@@ -30,8 +30,7 @@ public class TestG {
 
 	}
 
-	public static void storeNetList(Netlist<Object> netlist,
-			String componentsDst) throws Exception {
+	public static void storeNetList(Netlist<Object> netlist, String componentsDst) throws Exception {
 		PrintWriter out = new PrintWriter(new FileWriter(componentsDst));
 		for (SimComponent<Object> c : netlist.getComponents().values()) {
 			String[] context = c.getState();
@@ -46,13 +45,12 @@ public class TestG {
 
 	}
 
-	public static Netlist<Object> loadNetlist(String components,
-			String connections) throws Exception {
+	public static Netlist<Object> loadNetlist(String components, String connections) throws Exception {
 		Netlist<Object> netlist = new Netlist<Object>();
 		BufferedReader in = new BufferedReader(new FileReader(components));
 		String s;
 		while ((s = in.readLine()) != null) {
-			String[] names = s.split(" ");
+			String[] names = s.split(" ");			
 			netlist.addComponent(names);
 		}
 		in.close();
