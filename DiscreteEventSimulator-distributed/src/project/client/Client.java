@@ -1,9 +1,9 @@
-package project.testClient;
+package project.client;
 
 import java.io.IOException;
 import java.net.Socket;
 
-import project.centralServer.Server;
+import project.server.mainServer.Server;
 
 public class Client extends Thread {
 	private final String componentsPath, connectionsPath, componentsResultPath;

@@ -1,9 +1,9 @@
-package project.testClient;
+package project.client;
 
 import java.io.IOException;
 import java.net.Socket;
 
-import CommonServerClient.ServiceCommunications;
+import project.commonServerClient.ServiceCommunications;
 
 public class ClientService extends ServiceCommunications {
 

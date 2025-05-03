@@ -1,4 +1,4 @@
-package project.centralServer;
+package project.server.mainServer;
 
 import java.io.IOException;
 import java.io.Serializable;

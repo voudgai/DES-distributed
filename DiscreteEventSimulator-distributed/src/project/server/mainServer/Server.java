@@ -1,10 +1,10 @@
-package project.centralServer;
+package project.server.mainServer;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import CommonServerClient.ServiceCommunications;
+import project.commonServerClient.ServiceCommunications;
 
 public class Server {
 	static public final String IP_ADDRESS = "localhost";

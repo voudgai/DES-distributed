@@ -1,4 +1,4 @@
-package project.centralServer;
+package project.server.mainServer;
 
 import java.io.Serializable;
 import java.io.IOException;
@@ -6,7 +6,7 @@ import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 
-import CommonServerClient.ServiceCommunications;
+import project.commonServerClient.ServiceCommunications;
 import rs.ac.bg.etf.sleep.simulation.Netlist;
 import rs.ac.bg.etf.sleep.simulation.SimComponent;
 import rs.ac.bg.etf.sleep.simulation.Simulator;
