@@ -10,8 +10,6 @@ import project.commonServerClient.ServiceCommunications;
 import rs.ac.bg.etf.sleep.simulation.Netlist;
 import rs.ac.bg.etf.sleep.simulation.SimComponent;
 import rs.ac.bg.etf.sleep.simulation.Simulator;
-import rs.ac.bg.etf.sleep.simulation.SimulatorMultithread;
-import rs.ac.bg.etf.sleep.simulation.SimulatorOptimistic;
 
 public class ServerService extends ServiceCommunications {
 
@@ -32,6 +30,10 @@ public class ServerService extends ServiceCommunications {
 		receiveExpectedTime();
 		receiveAndGenerateNetlist();
 
+		simulator = SimulationType.newSimulator(simulationType);
+		if (simulator == null)
+			throw new NumberFormatException();
+		
 		simulator.setNetlist(netlist);
 		simulator.init();
 
@@ -48,18 +50,6 @@ public class ServerService extends ServiceCommunications {
 
 	private void receiveSimulationType() throws IOException {
 		simulationType = SimulationType.decode(Integer.parseInt(receiveLn()));
-
-		switch (simulationType) {
-		case MULTI_THREAD:
-			simulator = new SimulatorMultithread<Serializable>(1);
-			break;
-		case OPTIMISTIC:
-			simulator = new SimulatorOptimistic<Serializable>(1);
-			break;
-		case UNKNOWN:
-		default:
-			throw new NumberFormatException();
-		}
 	}
 
 	private void receiveExpectedTime() throws NumberFormatException, IOException {

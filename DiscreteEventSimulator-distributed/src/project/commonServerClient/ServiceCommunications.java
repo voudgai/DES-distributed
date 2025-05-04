@@ -6,15 +6,19 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.net.Socket;
+
+import rs.ac.bg.etf.sleep.simulation.Simulator;
+import rs.ac.bg.etf.sleep.simulation.SimulatorMultithread;
+import rs.ac.bg.etf.sleep.simulation.SimulatorOptimistic;
 
 public abstract class ServiceCommunications {
 
 	public enum SimulationType {
 		MULTI_THREAD(0), OPTIMISTIC(1), UNKNOWN(Integer.MIN_VALUE);
-		
-		static public SimulationType decode(int val)
-		{
+
+		static public SimulationType decode(int val) {
 			switch (val) {
 			case 0:
 				return MULTI_THREAD;
@@ -22,6 +26,18 @@ public abstract class ServiceCommunications {
 				return OPTIMISTIC;
 			default:
 				return UNKNOWN;
+			}
+		}
+		
+		static private int ID = 0;
+		static public Simulator<Serializable> newSimulator(SimulationType type) {
+			switch (type) {
+			case MULTI_THREAD:
+				return new SimulatorMultithread<Serializable>(ID++);
+			case OPTIMISTIC:
+				return new SimulatorOptimistic<Serializable>(ID++);
+			default:
+				return null;
 			}
 		}
 
@@ -51,7 +67,8 @@ public abstract class ServiceCommunications {
 	public String receiveLn() throws IOException {
 		String str = in.readLine();
 		System.out.println("Receiving " + str);
-		if(str.equals("null")) return null;
+		if (str.equals("null"))
+			return null;
 		return str;
 	}
 
@@ -81,7 +98,7 @@ public abstract class ServiceCommunications {
 			sendLn(null); // marks the end of the file
 		}
 	}
-	
+
 	protected void receiveFile(String path) throws IOException {
 		File file = new File(path);
 
