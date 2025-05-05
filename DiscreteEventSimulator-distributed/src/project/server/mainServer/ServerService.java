@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import project.commonServerClient.ServiceCommunications;
+import project.server.Job;
 import rs.ac.bg.etf.sleep.simulation.Netlist;
 import rs.ac.bg.etf.sleep.simulation.SimComponent;
 import rs.ac.bg.etf.sleep.simulation.Simulator;
@@ -16,35 +17,31 @@ public class ServerService extends ServiceCommunications {
 	private SimulationType simulationType = null;
 	private long simulationTime = -1L;
 	private Netlist<Serializable> netlist = null;
-	private Simulator<Serializable> simulator = null;
+	private Job job = null;
+//	private Simulator<Serializable> simulator = null;
 
 	public ServerService(Socket socket) throws IOException {
 		super(socket);
 	}
 
-	public Simulator<Serializable> receiveSimulator() throws NumberFormatException, IOException {
-		if (simulator != null)
-			return simulator;
+	public Job receiveJob() throws IOException {
+		if (job != null)
+			return job;
 
 		receiveSimulationType();
 		receiveExpectedTime();
 		receiveAndGenerateNetlist();
 
-		simulator = SimulationType.newSimulator(simulationType);
-		if (simulator == null)
-			throw new NumberFormatException();
-		
-		simulator.setNetlist(netlist);
-		simulator.init();
+		job = new Job(simulationType, simulationTime, netlist);
 
-		return simulator;
+		return job;
 	}
 
 	public long getSimulationTime() {
 		return simulationTime;
 	}
 
-	public void simulationEnded() throws IOException {
+	public void jobEnded() throws IOException {
 		sendNetList();
 	}
 

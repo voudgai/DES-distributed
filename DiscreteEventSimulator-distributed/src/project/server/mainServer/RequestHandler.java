@@ -1,40 +1,47 @@
 package project.server.mainServer;
 
 import java.io.IOException;
-import java.io.Serializable;
+import java.util.List;
 
-import rs.ac.bg.etf.sleep.simulation.Simulator;
+import project.server.Job;
 
 public class RequestHandler extends Thread {
 	private final ServerService service;
-	private Simulator<Serializable> simulator;
+	private final Server server;
 
-	public RequestHandler(ServerService service) {
+	public RequestHandler(ServerService service, Server server) {
 		this.service = service;
+		this.server = server;
 	}
 
 	@Override
 	public void run() {
+
 		try {
-			simulator = service.receiveSimulator();
-			if (simulator == null)
-				return;
-
-			simulate(service.getSimulationTime());
-
-			service.simulationEnded();
+			Job job = service.receiveJob();
+			List<Job> list = job.split(server.getNumOfWorkerStations());
+			server.addJobsAndGetResults(list);
+			
+			// wait for job(s) to get done, every job returns netlist after completetion, combine netlist and return it to client
 		} catch (IOException e) {
 			e.printStackTrace();
-		} finally {
-			System.out.println("Simulation ended.");
-			service.close();
-		}
-	}
-
-	private void simulate(long simulationTime) {
-		while (simulator.getlTime() < simulationTime) {
-			simulator.execute();
-			System.out.println("Time:" + simulator.getlTime());
 		}
 	}
 }
+
+//run{		
+//	try {
+//		simulator = service.receiveSimulator();
+//		if (simulator == null)
+//			return;
+//
+//		simulate(service.getSimulationTime());
+//
+//		service.simulationEnded();
+//	} catch (IOException e) {
+//		e.printStackTrace();
+//	} finally {
+//		System.out.println("Simulation ended.");
+//		service.close();
+//	}
+//}
